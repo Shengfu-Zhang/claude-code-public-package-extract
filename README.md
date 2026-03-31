@@ -15,11 +15,12 @@
 
 ## Overview
 
-This repository keeps together three things that are useful for studying the public Claude Code package:
+This repository keeps together four things that are useful for studying the public Claude Code package:
 
 - the original npm tarball
 - a locally extracted source archive
 - a browsable `src/` tree reconstructed from the distributed package artifacts
+- a generated documentation set for faster navigation and analysis
 
 The goal is simple: make the public package easier to inspect without pretending this is an official upstream repository.
 
@@ -31,6 +32,8 @@ The goal is simple: make the public package easier to inspect without pretending
 | `artifacts/extracted/claude-code-2.1.88-src.zip` | Downloadable zip of the extracted source tree | You want the extracted tree locally without rebuilding it |
 | `artifacts/original/claude-code-2.1.88.tgz` | Original npm package archive | You want provenance, the published bundle, or to reproduce extraction |
 | `scripts/extract-sources.js` | Local helper script used during extraction work | You want to rerun extraction from a local `cli.js.map` |
+| `.agents/summary/` | Generated architecture and navigation docs | You want a structured overview before digging into code |
+| `AGENTS.md` | Concise repo guide for coding agents | You want the shortest useful entry point for repo-specific navigation |
 
 Current local extract:
 
@@ -45,10 +48,22 @@ Notes:
 - `artifacts/original/claude-code-2.1.88.tgz` contains the original bundled package, including `cli.js`, `cli.js.map`, and vendor/native binaries, so it is much larger.
 - Most people only need `src/` or the extracted zip; the original `.tgz` is mainly for provenance and reproducibility.
 
+## Generated Documentation
+
+This repo now includes a generated documentation set aimed at both humans and AI coding assistants:
+
+- `.agents/summary/index.md` is the primary knowledge-base index
+- `.agents/summary/architecture.md`, `components.md`, `interfaces.md`, `data_models.md`, `workflows.md`, and `dependencies.md` provide deeper breakdowns
+- `.agents/summary/review_notes.md` records extraction caveats and documentation gaps
+- `AGENTS.md` is the concise root-level navigation guide
+
+If you want the fastest orientation path, start with `AGENTS.md` or `.agents/summary/index.md`, then jump into `src/`.
+
 ## Why This Repo Exists
 
 - The published package is much harder to inspect in bundled form.
 - Keeping the tarball, extracted tree, and helper script together makes analysis more reproducible.
+- The generated docs reduce the cold-start cost of navigating a large recovered source tree.
 - Longer architecture notes and follow-up analysis will live on my blog instead of turning this front page into a giant dump.
 
 ## Quick Use
@@ -56,6 +71,12 @@ Notes:
 ```bash
 # inspect the extracted source tree
 cd src
+
+# read the concise repo guide
+less ../AGENTS.md
+
+# read the generated knowledge-base index
+less ../.agents/summary/index.md
 
 # inspect the original published package
 tar -xzf artifacts/original/claude-code-2.1.88.tgz
@@ -76,6 +97,15 @@ The files here were reconstructed locally from publicly distributed package arti
 3. Normalize the extracted paths into a regular source tree for browsing.
 
 This is a research archive, not an official development checkout. Some internal-only or feature-gated code may still be absent from public artifacts.
+
+## Known Limitations Of This Extract
+
+If you are using this repo for code reading or interoperability work, keep these constraints in mind:
+
+- This is not a normal upstream checkout. Standard authoring metadata such as `package.json`, lockfiles, and CI config is not present in the recovered tree.
+- Some recovered files look transformed rather than hand-authored, so they are reliable for behavior and dependencies but weaker as style precedent.
+- A central message-type source, `src/types/message.js`, is imported widely but missing from the extracted tree, so exact message-schema refactors should be treated cautiously.
+- Feature-gated, internal, native, or vendor-backed behavior may be only partially represented in `src/`, even when surrounding TypeScript call sites are present.
 
 ## Important Disclaimer
 

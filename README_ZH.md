@@ -15,11 +15,12 @@
 
 ## 仓库概览
 
-这个仓库把三个对研究公开发布包有价值的部分放在了一起：
+这个仓库把四类对研究公开发布包有价值的内容放在了一起：
 
 - 原始 npm tarball
 - 本地导出的源码压缩包
 - 可直接浏览的 `src/` 提取结果
+- 一套便于快速导航和分析的生成文档
 
 目标很简单：让公开发布包更容易研究和引用，同时明确这不是官方上游仓库。
 
@@ -31,6 +32,8 @@
 | `artifacts/extracted/claude-code-2.1.88-src.zip` | 提取后源码树的下载压缩包 | 你想直接下载整理好的源码结果 |
 | `artifacts/original/claude-code-2.1.88.tgz` | 原始 npm 包归档 | 你想验证来源、查看原始发布物，或自己重跑提取 |
 | `scripts/extract-sources.js` | 本地提取过程中使用的辅助脚本 | 你想基于本地 `cli.js.map` 重新提取 |
+| `.agents/summary/` | 生成的架构与导航文档 | 你想先看结构化总览，再深入源码 |
+| `AGENTS.md` | 面向编码代理的精简仓库指南 | 你想最快理解仓库的入口、目录和关键子系统 |
 
 当前本地提取结果：
 
@@ -45,10 +48,22 @@
 - `artifacts/original/claude-code-2.1.88.tgz` 保留原始发布包，其中包含 `cli.js`、`cli.js.map` 以及 vendor/native 二进制文件，所以体积明显更大。
 - 大多数人只需要 `src/` 或提取后的 zip；原始 `.tgz` 主要用于来源证明和复现。
 
+## 生成文档
+
+仓库现在包含一套面向人类读者和 AI 编码助手的生成文档：
+
+- `.agents/summary/index.md`：主知识库索引
+- `.agents/summary/architecture.md`、`components.md`、`interfaces.md`、`data_models.md`、`workflows.md`、`dependencies.md`：更细化的结构拆解
+- `.agents/summary/review_notes.md`：提取局限、缺失项和文档审查备注
+- `AGENTS.md`：位于仓库根目录的精简导航入口
+
+如果你想最快建立整体认知，建议先看 `AGENTS.md` 或 `.agents/summary/index.md`，再进入 `src/`。
+
 ## 为什么保留这个仓库
 
 - 官方发布包在打包状态下不方便直接阅读。
 - 把 tarball、提取结果和辅助脚本放在一起，更方便复现与交叉验证。
+- 生成文档可以显著降低阅读这类大型提取源码树时的冷启动成本。
 - 更长的架构分析和后续笔记，我会放在博客里，而不是继续把首页 README 写成超长分析文档。
 
 ## 快速使用
@@ -56,6 +71,12 @@
 ```bash
 # 查看提取后的源码树
 cd src
+
+# 查看精简导航文档
+less ../AGENTS.md
+
+# 查看生成的知识库索引
+less ../.agents/summary/index.md
 
 # 查看原始发布包
 tar -xzf artifacts/original/claude-code-2.1.88.tgz
@@ -76,6 +97,15 @@ node scripts/extract-sources.js
 3. 对路径做最小化规范处理，整理成便于浏览的源码树。
 
 这只是研究归档，不是官方开发仓库。某些仅限内部或受 feature gate 控制的代码，仍然可能不会出现在公开制品里。
+
+## 这个提取版本的已知限制
+
+如果你打算基于这个仓库阅读代码或做互操作性研究，建议先了解这些边界：
+
+- 这不是正常的上游开发仓库。恢复出来的树中没有标准作者仓库常见的 `package.json`、lockfile 或 CI 配置。
+- 部分恢复文件看起来更像转换后的产物，而不是手写源码；它们适合用来判断行为和依赖，但不适合作为代码风格范本。
+- 一个核心消息类型文件 `src/types/message.js` 在很多地方被引用，但并未出现在提取结果中，因此凡是依赖精确消息结构的重构都应谨慎处理。
+- 某些受 feature gate 控制、依赖内部组件、原生二进制或 vendor 资源的行为，可能只在 `src/` 中留下外围调用点，而没有完整实现细节。
 
 ## 重要声明
 
