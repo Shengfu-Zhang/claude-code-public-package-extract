@@ -1,0 +1,7 @@
+.DS_Store
+package/
+restored-src/
+build-src/
+dist/
+node_modules/
+*.log
