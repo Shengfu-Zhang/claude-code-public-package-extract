@@ -63,6 +63,8 @@ If you want the fastest orientation path, start with `AGENTS.md` or `.agents/sum
 
 This repo also includes a browser-based teaching artifact for understanding the runtime shape without reading the whole tree first:
 
+- `index.html` — GitHub Pages landing page for the demo
+- `artifacts/demo/index.html` — shorter demo entrypoint inside the demo directory
 - `artifacts/demo/claude-code-loop-simulator.html` — English teaching console
 - `artifacts/demo/claude-code-loop-simulator.zh.html` — Chinese entry point
 
@@ -76,11 +78,12 @@ What it now shows:
 
 Suggested usage:
 
-1. Serve the repo over a simple local HTTP server, then open the teaching console in a browser. `python3 -m http.server 8123` from the repo root is enough. If you double-click the HTML file or open it through a file browser with `file://`, `Source Lens` may fail because the browser blocks the live file fetch.
-2. Start with `Plain Assistant Answer` to learn the shortest path.
-3. Use `Intercepted Input / Slash Command`, `Tool Loop And Recursion`, `Compaction And Continuation`, and `Tool Error And Recovery` to learn the main runtime seams one by one.
-4. Open `Everything Combined` only after the smaller branches feel obvious.
-5. Read left first, then right: `Transcript` shows visible output, `Inspector` shows the owning seam, and `Source Lens` proves it in the actual file.
+1. If GitHub Pages is enabled for this repo, open the repo root URL for the landing page or `/artifacts/demo/` for the demo shortcut. Both now resolve through `index.html`.
+2. For local use, serve the repo over a simple HTTP server, then open the teaching console in a browser. `python3 -m http.server 8123` from the repo root is enough. If you double-click the HTML file or open it through a file browser with `file://`, `Source Lens` may fail because the browser blocks the live file fetch.
+3. Start with `Plain Assistant Answer` to learn the shortest path.
+4. Use `Intercepted Input / Slash Command`, `Tool Loop And Recursion`, `Compaction And Continuation`, and `Tool Error And Recovery` to learn the main runtime seams one by one.
+5. Open `Everything Combined` only after the smaller branches feel obvious.
+6. Read left first, then right: `Transcript` shows visible output, `Inspector` shows the owning seam, and `Source Lens` proves it in the actual file.
 
 The console is a replay model, not live instrumentation. It is meant to teach shape and control flow, not to claim that every value shown came from a real captured session.
 

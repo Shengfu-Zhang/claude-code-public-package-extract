@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Claude Code Runtime Studio</title>
+    <meta
+      name="description"
+      content="Landing page for the Claude Code Runtime Studio demo and bilingual walkthrough."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4f2ee;
+        --panel: rgba(255, 255, 255, 0.84);
+        --line: rgba(35, 46, 43, 0.12);
+        --ink: #1f2a28;
+        --ink-soft: #5e6c67;
+        --accent: #1c6454;
+        --accent-soft: rgba(28, 100, 84, 0.1);
+        --max: 1120px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top left, rgba(28, 100, 84, 0.08), transparent 24%),
+          linear-gradient(180deg, #f8f7f4 0%, var(--bg) 100%);
+        color: var(--ink);
+        font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      main {
+        width: min(calc(100% - 32px), var(--max));
+        margin: 0 auto;
+        padding: 56px 0 72px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--ink-soft);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1,
+      h2 {
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+
+      .hero {
+        display: grid;
+        gap: 22px;
+        padding: 12vh 0 9vh;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .hero h1 {
+        max-width: 10ch;
+        font-size: clamp(3.2rem, 7vw, 6.4rem);
+        line-height: 0.92;
+      }
+
+      .hero p {
+        max-width: 58ch;
+        color: var(--ink-soft);
+        font-size: 18px;
+        line-height: 1.65;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 6px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          transform 140ms ease,
+          background 140ms ease,
+          border-color 140ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button.secondary {
+        border-color: var(--line);
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .meta-item {
+        padding: 16px 0 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .meta-item strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .meta-item span {
+        color: var(--ink-soft);
+        line-height: 1.55;
+      }
+
+      .sections {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+        gap: 40px;
+        padding-top: 38px;
+      }
+
+      .section {
+        display: grid;
+        gap: 16px;
+      }
+
+      .section h2 {
+        font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+      }
+
+      .section p,
+      .section li {
+        color: var(--ink-soft);
+        line-height: 1.7;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .links {
+        display: grid;
+        gap: 14px;
+      }
+
+      .link-block {
+        display: grid;
+        gap: 6px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        text-decoration: none;
+        color: inherit;
+        transition:
+          transform 140ms ease,
+          border-color 140ms ease;
+      }
+
+      .link-block:hover {
+        transform: translateY(-1px);
+        border-color: rgba(28, 100, 84, 0.25);
+      }
+
+      .link-block strong {
+        font-size: 17px;
+      }
+
+      .link-block span {
+        color: var(--ink-soft);
+        line-height: 1.55;
+      }
+
+      code {
+        padding: 0.12rem 0.34rem;
+        border-radius: 0.45rem;
+        background: var(--accent-soft);
+        font-family: "SFMono-Regular", "SF Mono", Consolas, monospace;
+        font-size: 0.92em;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          padding: 36px 0 48px;
+        }
+
+        .hero {
+          padding: 40px 0 32px;
+        }
+
+        .meta,
+        .sections {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Claude Code Public Package Extract</div>
+        <h1>Runtime Studio, ready for GitHub Pages.</h1>
+        <p>
+          Use this repo landing page as the shortest path into the browser demo.
+          The walkthrough is served from <code>artifacts/demo/</code> and works
+          best over HTTP, which GitHub Pages already provides.
+        </p>
+        <div class="actions">
+          <a class="button" href="./artifacts/demo/claude-code-loop-simulator.html">Open English Demo</a>
+          <a class="button secondary" href="./artifacts/demo/claude-code-loop-simulator.zh.html">打开中文版本</a>
+        </div>
+        <div class="meta">
+          <div class="meta-item">
+            <strong>Primary Focus</strong>
+            <span>Understand the core loop first, then peel back the wrapper layers and source seams.</span>
+          </div>
+          <div class="meta-item">
+            <strong>Best Entry</strong>
+            <span>The root URL now opens a landing page instead of forcing the long demo filename.</span>
+          </div>
+          <div class="meta-item">
+            <strong>Repo Context</strong>
+            <span>This is a recovered extract, so the demo explicitly teaches around missing source gaps.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="sections">
+        <div class="section">
+          <h2>Why this exists</h2>
+          <p>
+            The teaching console is meant to explain the reusable runtime shape,
+            not to glorify the terminal shell. The center of gravity is still
+            <code>QueryEngine</code> wrapped around <code>queryLoop()</code>,
+            with the current REPL treated as one replaceable UX surface.
+          </p>
+          <ul>
+            <li>The replay view teaches visible output first.</li>
+            <li>The inspector then shows which layer owns control.</li>
+            <li>The source lens ties each beat back to the real file.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>Open next</h2>
+          <div class="links">
+            <a class="link-block" href="./artifacts/demo/">
+              <strong>Demo Directory</strong>
+              <span>Shorter Pages path for the bilingual runtime walkthrough.</span>
+            </a>
+            <a class="link-block" href="./README.md">
+              <strong>README</strong>
+              <span>Overview, usage notes, and the architectural reading strategy.</span>
+            </a>
+            <a class="link-block" href="./README_ZH.md">
+              <strong>README_ZH</strong>
+              <span>Chinese overview and the same guided reading path.</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

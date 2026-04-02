@@ -63,6 +63,8 @@
 
 仓库里还包含一个浏览器中的教学型演示，用来帮助你在不通读整棵源码树的前提下先抓住运行时结构：
 
+- `index.html`：GitHub Pages 的根入口页
+- `artifacts/demo/index.html`：`artifacts/demo/` 目录下的短入口
 - `artifacts/demo/claude-code-loop-simulator.html`：英文教学控制台
 - `artifacts/demo/claude-code-loop-simulator.zh.html`：中文入口
 
@@ -76,11 +78,12 @@
 
 建议的使用顺序：
 
-1. 先在仓库根目录启动一个简单的本地 HTTP 服务，再打开教学控制台。比如直接运行 `python3 -m http.server 8123`。如果你是直接双击 HTML，或者通过文件浏览器用 `file://` 打开，`Source Lens` 可能会失效，因为浏览器会拦截这类实时文件读取。
-2. 从 `Plain Assistant Answer` 开始，先理解最短路径。
-3. 再依次看 `Intercepted Input / Slash Command`、`Tool Loop And Recursion`、`Compaction And Continuation`、`Tool Error And Recovery`，把主要接缝一条条走清楚。
-4. 等前面的单条分支都看顺了，再打开 `Everything Combined` 做总复习。
-5. 阅读顺序建议固定成一套动作：先看左侧 `Transcript`，再看右侧 `Inspector`，最后用 `Source Lens` 回到真实源码。
+1. 如果这个仓库启用了 GitHub Pages，可以直接打开仓库根路径的 landing page，或者访问 `/artifacts/demo/` 这个短入口；它们现在都会通过 `index.html` 解析到正确页面。
+2. 本地使用时，先在仓库根目录启动一个简单的 HTTP 服务，再打开教学控制台。比如直接运行 `python3 -m http.server 8123`。如果你是直接双击 HTML，或者通过文件浏览器用 `file://` 打开，`Source Lens` 可能会失效，因为浏览器会拦截这类实时文件读取。
+3. 从 `Plain Assistant Answer` 开始，先理解最短路径。
+4. 再依次看 `Intercepted Input / Slash Command`、`Tool Loop And Recursion`、`Compaction And Continuation`、`Tool Error And Recovery`，把主要接缝一条条走清楚。
+5. 等前面的单条分支都看顺了，再打开 `Everything Combined` 做总复习。
+6. 阅读顺序建议固定成一套动作：先看左侧 `Transcript`，再看右侧 `Inspector`，最后用 `Source Lens` 回到真实源码。
 
 这个控制台是“回放模型”，不是实时埋点调试器。它的目标是帮助你理解结构和控制流，而不是声称每个值都来自真实捕获的会话。
 
