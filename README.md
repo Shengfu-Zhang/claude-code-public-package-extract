@@ -59,6 +59,50 @@ This repo now includes a generated documentation set aimed at both humans and AI
 
 If you want the fastest orientation path, start with `AGENTS.md` or `.agents/summary/index.md`, then jump into `src/`.
 
+## Interactive Teaching Console
+
+This repo also includes a browser-based teaching artifact for understanding the runtime shape without reading the whole tree first:
+
+- `artifacts/demo/claude-code-loop-simulator.html` — English teaching console
+- `artifacts/demo/claude-code-loop-simulator.zh.html` — Chinese entry point
+
+What it now shows:
+
+- 10 guided replays covering direct answers, recursive tool use, skills/plugins, agent teams, permission denials, canceled tasks, intercepted slash-command input, compaction/continuation, tool-error recovery, and one final session that combines every branch in a sensible order
+- a guided workspace where `Transcript` is the first reading surface, `Inspector` is the second, and deeper debugger detail stays collapsed until you ask for it
+- a live `Source Lens` that fetches the real repo file around the active line and highlights the current seam
+- a scenario-specific `File Guide` that tells you what to open first, what can wait, and what is missing from the recovered extract
+- labeled reply payloads that explicitly show what the runtime is trying to emit at each beat
+
+Suggested usage:
+
+1. Serve the repo over a simple local HTTP server, then open the teaching console in a browser. `python3 -m http.server 8123` from the repo root is enough. If you double-click the HTML file or open it through a file browser with `file://`, `Source Lens` may fail because the browser blocks the live file fetch.
+2. Start with `Plain Assistant Answer` to learn the shortest path.
+3. Use `Intercepted Input / Slash Command`, `Tool Loop And Recursion`, `Compaction And Continuation`, and `Tool Error And Recovery` to learn the main runtime seams one by one.
+4. Open `Everything Combined` only after the smaller branches feel obvious.
+5. Read left first, then right: `Transcript` shows visible output, `Inspector` shows the owning seam, and `Source Lens` proves it in the actual file.
+
+The console is a replay model, not live instrumentation. It is meant to teach shape and control flow, not to claim that every value shown came from a real captured session.
+
+Why it is organized this way:
+
+- the teaching order follows the architecture: visible output first, wrapper ownership second, exact source proof third
+- `QueryEngine` plus `queryLoop()` are the durable center; the Ink/terminal shell is important, but replaceable
+- the demo intentionally treats the current REPL as one UX layer on top of a reusable conversation engine, because that is the most transferable mental model for building other surfaces
+- `Source Lens` and `File Guide` exist to tie each replay beat back to concrete files, including important extraction gaps such as `src/types/message.js`
+
+## Reading Strategy: Core Loop First
+
+If your goal is architectural understanding, focus on the runtime center before spending much time on the terminal UX shell.
+
+- `src/query.ts` and `src/QueryEngine.ts` are the real center of gravity. That is where turns are wrapped, tool use is coordinated, and recursion happens.
+- `src/screens/REPL.tsx` is important for interaction details, but it is a replaceable surface layer. A web debugger, IDE panel, headless SDK surface, or another frontend could reuse the same engine without reusing the Ink UI.
+- Skills, plugins, permissions, and agent teams are best understood as side-paths wrapped around the same conversation engine, not as separate products.
+
+In other words: the current UX layer is useful, but not sacred. The most reusable mental model is `QueryEngine` around `queryLoop()`, then everything else layered around that.
+
+The teaching console follows that same rule on purpose: it starts from the replayed output, then reveals wrapper ownership, then points directly at the source seam. The terminal UI is shown as one layer in that stack, not as the architectural center.
+
 ## Why This Repo Exists
 
 - The published package is much harder to inspect in bundled form.

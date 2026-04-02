@@ -59,6 +59,50 @@
 
 如果你想最快建立整体认知，建议先看 `AGENTS.md` 或 `.agents/summary/index.md`，再进入 `src/`。
 
+## 交互式教学控制台
+
+仓库里还包含一个浏览器中的教学型演示，用来帮助你在不通读整棵源码树的前提下先抓住运行时结构：
+
+- `artifacts/demo/claude-code-loop-simulator.html`：英文教学控制台
+- `artifacts/demo/claude-code-loop-simulator.zh.html`：中文入口
+
+它现在展示的是一套更偏“引导式学习”的回放界面：
+
+- 共 10 个引导演示，覆盖直接回答、递归工具调用、技能/插件、代理团队、权限拒绝、任务取消、slash command 输入拦截、压缩与续写、工具报错恢复，以及最后把所有分支串起来的完整场景
+- 默认先看 `Transcript`，再看 `Inspector`，更深的调试细节会折叠在后面，不会一上来就把页面塞满
+- `Source Lens` 会直接抓取仓库里的真实文件，并高亮当前那一行对应的源码接缝
+- `File Guide` 会按当前场景告诉你哪些文件值得先看、哪些可以暂缓、哪些本来就缺失于提取结果
+- 每个可见 payload 都会明确标出“这一步系统准备回什么”以及“为什么会这么回”
+
+建议的使用顺序：
+
+1. 先在仓库根目录启动一个简单的本地 HTTP 服务，再打开教学控制台。比如直接运行 `python3 -m http.server 8123`。如果你是直接双击 HTML，或者通过文件浏览器用 `file://` 打开，`Source Lens` 可能会失效，因为浏览器会拦截这类实时文件读取。
+2. 从 `Plain Assistant Answer` 开始，先理解最短路径。
+3. 再依次看 `Intercepted Input / Slash Command`、`Tool Loop And Recursion`、`Compaction And Continuation`、`Tool Error And Recovery`，把主要接缝一条条走清楚。
+4. 等前面的单条分支都看顺了，再打开 `Everything Combined` 做总复习。
+5. 阅读顺序建议固定成一套动作：先看左侧 `Transcript`，再看右侧 `Inspector`，最后用 `Source Lens` 回到真实源码。
+
+这个控制台是“回放模型”，不是实时埋点调试器。它的目标是帮助你理解结构和控制流，而不是声称每个值都来自真实捕获的会话。
+
+为什么这样组织：
+
+- 学习顺序本身就是架构顺序：先看可见输出，再看控制权归属，最后再去源码里核对证据
+- 真正稳定的中心仍然是 `QueryEngine` 和 `queryLoop()`；终端 Ink UI 很重要，但它不是唯一也不是不可替代的外层
+- 这个 demo 有意把当前 REPL 当成“可替换的一层 UX 外壳”，因为这是最容易迁移到网页、IDE、SDK 或其他前端时仍然成立的理解方式
+- `Source Lens` 和 `File Guide` 的作用，就是把每一步回放重新钉回具体文件，包括像 `src/types/message.js` 这种提取结果里本来就缺失的关键缺口
+
+## 阅读策略：先抓核心循环
+
+如果你的目标是理解架构本身，建议先看运行时中心，再看终端 UX 外壳。
+
+- `src/query.ts` 和 `src/QueryEngine.ts` 才是真正的重心。turn 的包装、工具调用编排、递归续跑，核心都在这里。
+- `src/screens/REPL.tsx` 对交互细节很重要，但它本质上是一个可替换的界面层。无论是网页调试器、IDE 面板、headless SDK，还是别的前端，都可以复用同一套引擎，而不必复用这层 Ink UI。
+- 技能、插件、权限系统、代理团队，更适合被理解为围绕同一会话引擎展开的旁路分支，而不是各自独立的一套产品。
+
+换句话说：当前 UX 层很有价值，但不是不可替代的核心。最稳定、最可复用的心智模型应该是 `QueryEngine` 包住 `queryLoop()`，然后再往外看其它层。
+
+教学控制台也是按这个原则设计的：先给你看回放出来的可见结果，再逐层展开 wrapper 的归属关系，最后把当前 seam 直接对回源码。终端 UI 在里面只是其中一层，不是整套架构的中心。
+
 ## 为什么保留这个仓库
 
 - 官方发布包在打包状态下不方便直接阅读。
